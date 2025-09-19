@@ -1,0 +1,170 @@
+{
+  "metadata": {
+    "project": "NAMASTE",
+    "description": "Traditional Medicine Code Mapping System",
+    "version": "1.0.0",
+    "lastUpdated": "2025-09-19",
+    "language": "en"
+  },
+  "prompts": [
+    {
+      "id": "csv_import_setup",
+      "title": "CSV Import Setup",
+      "category": "Feature Implementation",
+      "context": {
+        "functionality": "CSV file import for medical codes",
+        "components": ["CSVImport.tsx", "importRoutes.js", "proxy.js"],
+        "requirements": [
+          "Allow users to upload CSV files containing medical codes",
+          "Support file size up to 5MB",
+          "Validate file type and contents",
+          "Provide user feedback through toast notifications"
+        ]
+      },
+      "prompts": [
+        {
+          "question": "where is csv import added in UI",
+          "context": "Adding CSV import button to search interface",
+          "relatedFiles": ["src/components/CodeSearchInterface.tsx", "src/components/CSVImport.tsx"]
+        },
+        {
+          "question": "add import button near the search button",
+          "context": "Positioning CSV import button in the UI",
+          "relatedFiles": ["src/components/CodeSearchInterface.tsx"]
+        },
+        {
+          "question": "sort error in CodeSearchInterface.tsx",
+          "context": "Fixing syntax errors in component structure",
+          "relatedFiles": ["src/components/CodeSearchInterface.tsx"]
+        },
+        {
+          "question": "failed to import csv please try again",
+          "context": "Debugging and fixing CSV import functionality",
+          "relatedFiles": [
+            "server/routes/importRoutes.js",
+            "server/proxy.js",
+            "src/components/CSVImport.tsx"
+          ],
+          "solutions": [
+            "Create uploads directory",
+            "Add better error handling",
+            "Fix form data headers",
+            "Improve error feedback"
+          ]
+        }
+      ]
+    }
+  ],
+  "componentTemplates": {
+    "CSVImport": {
+      "description": "React component for handling CSV file uploads",
+      "dependencies": [
+        "@/components/ui/button",
+        "@/components/ui/toast",
+        "lucide-react"
+      ],
+      "props": {},
+      "events": [
+        "onFileSelect",
+        "onUploadSuccess",
+        "onUploadError"
+      ]
+    }
+  },
+  "apiEndpoints": {
+    "/api/import/upload": {
+      "method": "POST",
+      "description": "Upload and process CSV files",
+      "contentType": "multipart/form-data",
+      "parameters": {
+        "file": {
+          "type": "File",
+          "required": true,
+          "format": "CSV",
+          "maxSize": "5MB"
+        }
+      },
+      "responses": {
+        "200": {
+          "description": "Success response",
+          "schema": {
+            "success": "boolean",
+            "message": "string",
+            "errors": "array?",
+            "summary": {
+              "total": "number",
+              "errors": "number",
+              "categories": "array",
+              "timestamp": "string"
+            }
+          }
+        },
+        "400": {
+          "description": "Bad request",
+          "schema": {
+            "error": "string"
+          }
+        }
+      }
+    }
+  },
+  "errorHandling": {
+    "client": {
+      "fileValidation": [
+        "File type must be CSV",
+        "Maximum file size is 5MB"
+      ],
+      "uploadErrors": [
+        "Network errors",
+        "Server response errors",
+        "File reading errors"
+      ]
+    },
+    "server": {
+      "multerErrors": [
+        "LIMIT_FILE_SIZE",
+        "File type validation",
+        "Storage errors"
+      ],
+      "processingErrors": [
+        "CSV parsing errors",
+        "Data validation errors",
+        "Storage errors"
+      ]
+    }
+  },
+  "aiAssistantInstructions": {
+    "description": "Instructions for AI assistants working with this codebase",
+    "contextGathering": [
+      "Check related files for implementation details",
+      "Understand the component hierarchy",
+      "Review error handling patterns",
+      "Consider UI/UX implications"
+    ],
+    "bestPractices": [
+      "Always validate file types and sizes",
+      "Provide clear user feedback",
+      "Implement proper error handling",
+      "Log important operations",
+      "Follow TypeScript type safety",
+      "Maintain component structure"
+    ],
+    "commonIssues": [
+      "Missing uploads directory",
+      "Incorrect form data headers",
+      "Improper error handling",
+      "Component structure issues",
+      "TypeScript type errors"
+    ]
+  },
+  "testScenarios": {
+    "csvImport": [
+      "Upload valid CSV file",
+      "Upload invalid file type",
+      "Upload file exceeding size limit",
+      "Upload empty file",
+      "Network failure during upload",
+      "Server error during processing"
+    ]
+  }
+}

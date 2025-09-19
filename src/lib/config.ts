@@ -9,8 +9,8 @@ interface ICD11Config {
 const icd11Config: ICD11Config = {
   clientId: import.meta.env.VITE_ICD11_CLIENT_ID,
   clientSecret: import.meta.env.VITE_ICD11_SECRET_KEY,
-  tokenUrl: "http://localhost:3000/api/icd11/token",  // Local proxy endpoint
-  apiUrl: "https://id.who.int/icd",  // Base URL for ICD API
+  tokenUrl: "https://icd11restapi-developer-test.azurewebsites.net/icd/token",
+  apiUrl: "https://icd11restapi-developer-test.azurewebsites.net/icd",
   scope: "icdapi_access",
 };
 

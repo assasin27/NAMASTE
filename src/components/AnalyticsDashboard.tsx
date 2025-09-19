@@ -16,6 +16,7 @@ import {
   Line
 } from "recharts";
 import { TrendingUp, Users, Database, Activity, Download, RefreshCw } from "lucide-react";
+import CSVImport from "./CSVImport";
 
 // Mock analytics data
 const codingDistributionData = [
@@ -122,6 +123,7 @@ const AnalyticsDashboard = () => {
                 </Badge>
               </div>
               <div className="flex items-center space-x-2">
+                <CSVImport />
                 <Button variant="outline" size="sm">
                   <RefreshCw className="h-4 w-4 mr-2" />
                   Refresh

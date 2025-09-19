@@ -1,0 +1,4 @@
+code,namaste_code,description_en,description_hi,category,subcategory,tags,icd11_mapping,last_updated
+NMST001,AYR-001,"Vata Dosha Imbalance","वात दोष असंतुलन",Ayurveda,Dosha,"ayurveda,vata,dosha",MG24.0,2025-09-19
+NMST002,AYR-002,"Pitta Dosha Imbalance","पित्त दोष असंतुलन",Ayurveda,Dosha,"ayurveda,pitta,dosha",MG24.1,2025-09-19
+NMST003,AYR-003,"Kapha Dosha Imbalance","कफ दोष असंतुलन",Ayurveda,Dosha,"ayurveda,kapha,dosha",MG24.2,2025-09-19

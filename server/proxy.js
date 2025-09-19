@@ -1,10 +1,14 @@
 require('dotenv').config();
 const express = require('express');
 const cors = require('cors');
-const fetch = (...args) => import('node-fetch').then(({default: fetch}) => fetch(...args));
+const path = require('path');
 
 // Create Express app
 const app = express();
+const fetch = (...args) => import('node-fetch').then(({default: fetch}) => fetch(...args));
+
+// Import routes
+const importRoutes = require('./routes/importRoutes');
 
 // Debug logging middleware
 app.use((req, res, next) => {
@@ -38,6 +42,12 @@ app.use(cors({
 // Body parsing
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
+
+// Mount import routes
+app.use('/api/import', importRoutes);
+
+// Serve static files
+app.use(express.static(path.join(__dirname, '../public')));
 
 // Error handling middleware
 app.use((err, req, res, next) => {
