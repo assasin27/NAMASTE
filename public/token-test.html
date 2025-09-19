@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>ICD-11 Token Test</title>
+    <script>
+        const clientId = '8839379d-ac66-4ed0-a673-6b8509f6f3b0_1efcc11e-d720-4ca3-a2e0-6ab606179a0e';
+        const clientSecret = 'ao1rzFhtFj/0ZpnIa6WO00gun8MUSEKAXJuI6iE05hk=';
+        const tokenUrl = 'https://icdaccessmanagement.who.int/connect/token';
+
+        async function testTokenEndpoint() {
+            const resultDiv = document.getElementById('result');
+            try {
+                resultDiv.innerHTML = 'Testing token endpoint...';
+                
+                const body = new URLSearchParams({
+                    grant_type: 'client_credentials',
+                    scope: 'icdapi_access'
+                });
+
+                const authHeader = 'Basic ' + btoa(`${clientId}:${clientSecret}`);
+                
+                const response = await fetch(tokenUrl, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/x-www-form-urlencoded',
+                        'Authorization': authHeader,
+                        'Accept': 'application/json'
+                    },
+                    body: body.toString()
+                });
+
+                const responseText = await response.text();
+                resultDiv.innerHTML = `
+                    <h3>Response Details:</h3>
+                    <p>Status: ${response.status}</p>
+                    <p>Status Text: ${response.statusText}</p>
+                    <pre>${responseText}</pre>
+                    <h3>Response Headers:</h3>
+                    <pre>${JSON.stringify(Object.fromEntries([...response.headers]), null, 2)}</pre>
+                `;
+            } catch (error) {
+                resultDiv.innerHTML = `
+                    <h3>Error:</h3>
+                    <pre style="color: red">${error.toString()}</pre>
+                    <p>Error name: ${error.name}</p>
+                    <p>Error message: ${error.message}</p>
+                `;
+            }
+        }
+    </script>
+</head>
+<body>
+    <h1>ICD-11 Token Test</h1>
+    <button onclick="testTokenEndpoint()">Test Token Endpoint</button>
+    <div id="result"></div>
+</body>
+</html>

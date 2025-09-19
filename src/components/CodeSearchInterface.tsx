@@ -1,10 +1,12 @@
 import { useState } from "react";
+// import { fetchICD11Codes } from "@/lib/icd11Api";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Search, Copy, ExternalLink, ArrowRight } from "lucide-react";
+import ICD11Browser from "./ICD11Browser";
 
 // Mock data for demonstration
 const mockNamasteResults = [
@@ -61,21 +63,12 @@ const CodeSearchInterface = () => {
 
   const handleSearch = async () => {
     if (!searchTerm.trim()) return;
-    
     setIsSearching(true);
-    // Simulate API call
     setTimeout(() => {
-      if (activeTab === "namaste") {
-        setResults(mockNamasteResults.filter(item => 
-          item.term.toLowerCase().includes(searchTerm.toLowerCase()) ||
-          item.code.toLowerCase().includes(searchTerm.toLowerCase())
-        ));
-      } else {
-        setResults(mockIcdResults.filter(item => 
-          item.term.toLowerCase().includes(searchTerm.toLowerCase()) ||
-          item.code.toLowerCase().includes(searchTerm.toLowerCase())
-        ));
-      }
+      setResults(mockNamasteResults.filter(item => 
+        item.term.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        item.code.toLowerCase().includes(searchTerm.toLowerCase())
+      ));
       setIsSearching(false);
     }, 800);
   };
@@ -192,63 +185,7 @@ const CodeSearchInterface = () => {
                 </TabsContent>
 
                 <TabsContent value="icd11" className="mt-6">
-                  <div className="space-y-4">
-                    {results.length > 0 ? (
-                      results.map((item, index) => (
-                        <Card key={index} className="p-6 hover:shadow-medical transition-medical">
-                          <div className="flex items-start justify-between">
-                            <div className="flex-1">
-                              <div className="flex items-center space-x-3 mb-3">
-                                <Badge className="icd-code font-mono">
-                                  {item.code}
-                                </Badge>
-                                <Badge variant="outline" className="text-xs">
-                                  {item.system}
-                                </Badge>
-                                <Badge variant="secondary" className="status-active">
-                                  {item.status}
-                                </Badge>
-                              </div>
-                              <h3 className="text-lg font-semibold text-foreground mb-2">
-                                {item.term}
-                              </h3>
-                              <p className="text-muted-foreground mb-4">
-                                {item.description}
-                              </p>
-                              {item.namasteMapping && (
-                                <div className="flex items-center space-x-2">
-                                  <span className="text-sm text-muted-foreground">Maps from NAMASTE:</span>
-                                  <Badge className="namaste-code font-mono">
-                                    {item.namasteMapping}
-                                  </Badge>
-                                </div>
-                              )}
-                            </div>
-                            <div className="flex space-x-2">
-                              <Button
-                                variant="ghost"
-                                size="sm"
-                                onClick={() => copyToClipboard(item.code)}
-                              >
-                                <Copy className="h-4 w-4" />
-                              </Button>
-                              <Button variant="ghost" size="sm">
-                                <ExternalLink className="h-4 w-4" />
-                              </Button>
-                            </div>
-                          </div>
-                        </Card>
-                      ))
-                    ) : searchTerm && !isSearching ? (
-                      <div className="text-center py-12">
-                        <p className="text-muted-foreground">No results found for "{searchTerm}"</p>
-                      </div>
-                    ) : (
-                      <div className="text-center py-12">
-                        <p className="text-muted-foreground">Search for ICD-11 TM2 and Biomedicine codes</p>
-                      </div>
-                    )}
-                  </div>
+                  <ICD11Browser />
                 </TabsContent>
               </Tabs>
             </div>

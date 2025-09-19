@@ -1,0 +1,165 @@
+{
+  "history": [
+    {
+      "timestamp": "2025-09-19T14:40:00Z",
+      "latest_test_results": {
+        "timestamp": "2025-09-19T14:50:00Z",
+        "endpoints": {
+          "health": "not_responding",
+          "token": "not_responding"
+        },
+        "network_diagnostics": {
+          "port_5000": {
+            "status": "available",
+            "tcp_test": "failed",
+            "ping_test": "successful"
+          },
+          "firewall": {
+            "status": "enabled",
+            "profiles": ["Domain", "Private", "Public"]
+          },
+          "loopback": {
+            "ping": "working",
+            "tcp": "failed"
+          }
+        },
+        "attempted_clients": [
+          "node http",
+          "axios",
+          "powershell",
+          "Test-NetConnection"
+        ],
+        "next_steps": [
+          "Verify server process is still running",
+          "Try different HTTP client libraries",
+          "Check Windows Firewall settings"
+        ]
+      },
+      "session": {
+        "context": {
+          "project": "NAMASTE",
+          "branch": "main",
+          "workspace": "D:\\NAMASTE",
+          "last_successful_port": 5000,
+          "current_state": "Testing token endpoint with working health check"
+        },
+        "interactions": [
+          {
+            "topic": "ICD-11 API Integration",
+            "components": [
+              {
+                "type": "proxy_server_setup",
+                "status": "completed",
+                "details": {
+                  "port": 4000,
+                  "endpoints": [
+                    {
+                      "path": "/api/icd11/token",
+                      "method": "POST",
+                      "purpose": "OAuth token retrieval"
+                    }
+                  ]
+                }
+              },
+              {
+                "type": "cors_configuration",
+                "status": "completed",
+                "details": {
+                  "origin": "*",
+                  "methods": ["GET", "POST", "OPTIONS"],
+                  "headers": ["Content-Type", "Accept", "Authorization"]
+                }
+              }
+            ]
+          },
+          {
+            "topic": "Network Debugging",
+            "issues": [
+              {
+                "type": "connectivity",
+                "description": "Local connection issues with proxy server",
+                "attempted_solutions": [
+                  "Changed ports (3000 to 4000)",
+                  "Changed to port 5000",
+                  "Disabled VS Code Live Preview",
+                  "Updated CORS settings",
+                  "Added explicit error handling",
+                  "Bound to all interfaces (0.0.0.0)",
+                  "Added administrator privileges"
+                ],
+                "status": "completed"
+              },
+              {
+                "type": "environment",
+                "description": "Environment variable loading issues",
+                "attempted_solutions": [
+                  "Direct environment variable injection",
+                  "Updated dotenv configuration",
+                  "Explicit environment variable setting in PowerShell"
+                ],
+                "status": "in_progress",
+                "latest_attempt": {
+                  "timestamp": "2025-09-19T14:35:00Z",
+                  "credentials_used": true,
+                  "port": 5000,
+                  "result": "Connection issues persist"
+                }
+              }
+            ]
+          }
+        ],
+        "critical_files": [
+          {
+            "path": "server/proxy.js",
+            "purpose": "ICD-11 API proxy server",
+            "status": "needs_review"
+          },
+          {
+            "path": "src/lib/icd11Api.ts",
+            "purpose": "API integration client",
+            "status": "needs_review"
+          },
+          {
+            "path": ".env",
+            "purpose": "Configuration",
+            "contains_sensitive": true
+          }
+        ]
+      },
+      "todo_status": {
+        "completed": [
+          "Update proxy server configuration"
+        ],
+        "pending": [
+          "Fix VS Code Live Preview interference",
+          "Test token endpoint"
+        ]
+      }
+    }
+  ],
+  "technical_context": {
+    "environment": {
+      "os": "Windows",
+      "shell": "PowerShell v5.1",
+      "node_version": "Latest LTS"
+    },
+    "tools_used": [
+      "express",
+      "cors",
+      "node-fetch",
+      "dotenv"
+    ],
+    "key_learnings": [
+      "VS Code Live Preview can interfere with local HTTP requests",
+      "PowerShell has specific requirements for local HTTP testing",
+      "Environment variable handling needs special attention in Windows",
+      "Local HTTP testing may require different libraries (http, axios) for troubleshooting",
+      "Server binding to 0.0.0.0 is more reliable than localhost for local development"
+    ]
+  },
+  "meta": {
+    "version": "1.0",
+    "last_updated": "2025-09-19T00:00:00Z",
+    "format": "NAMASTE_memory_schema_v1"
+  }
+}

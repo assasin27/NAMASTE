@@ -1,1 +1,10 @@
 /// <reference types="vite/client" />
+
+interface ImportMetaEnv {
+  readonly VITE_ICD11_CLIENT_ID: 8839379d-ac66-4ed0-a673-6b8509f6f3b0_1efcc11e-d720-4ca3-a2e0-6ab606179a0e
+  readonly VITE_ICD11_SECRET_KEY: ao1rzFhtFj/0ZpnIa6WO00gun8MUSEKAXJuI6iE05hk=
+}
+
+interface ImportMeta {
+  readonly env: ImportMetaEnv
+}
