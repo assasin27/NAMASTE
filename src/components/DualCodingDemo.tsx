@@ -7,11 +7,11 @@ import { ArrowRight, Link2, CheckCircle, RefreshCw } from "lucide-react";
 
 // Mock patient data for demonstration
 const mockPatientData = {
-  id: "PAT-2024-001",
+  id: "PAT-2025-001",
   name: "Rajesh Kumar",
   age: 45,
   gender: "Male",
-  encounter: "ENC-2024-001"
+  encounter: "ENC-2025-001"
 };
 
 const mockMappings = [

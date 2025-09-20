@@ -69,7 +69,7 @@ const Footer = () => {
 
           {/* SIH Info */}
           <div>
-            <h4 className="font-semibold text-foreground mb-4">SIH 2024</h4>
+            <h4 className="font-semibold text-foreground mb-4">SIH 2025</h4>
             <div className="space-y-3">
               <div className="bg-primary/10 p-3 rounded-lg">
                 <p className="text-sm font-medium text-primary">Problem Statement #25026</p>
@@ -89,7 +89,7 @@ const Footer = () => {
 
         <div className="flex flex-col md:flex-row items-center justify-between">
           <div className="text-sm text-muted-foreground mb-4 md:mb-0">
-            © 2024 NAMASTE EMR Integration Platform. Built for Smart India Hackathon 2024.
+            © 2025 NAMASTE EMR Integration Platform. Built for Smart India Hackathon 2025.
           </div>
           <div className="flex items-center space-x-6 text-sm text-muted-foreground">
             <a href="#" className="hover:text-foreground transition-colors">Privacy Policy</a>

@@ -1,9 +1,13 @@
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { Search, Menu, Settings, User, Bell } from "lucide-react";
+import { Menu, User } from "lucide-react";
 
-const Header = () => {
+interface HeaderProps {
+  onLoginClick: () => void;
+}
+
+const Header = ({ onLoginClick }: HeaderProps) => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
 
   return (
@@ -51,13 +55,12 @@ const Header = () => {
 
           {/* User Actions */}
           <div className="flex items-center space-x-3">
-            <Button variant="ghost" size="sm" className="hidden md:flex">
-              <Bell className="h-4 w-4" />
-            </Button>
-            <Button variant="ghost" size="sm" className="hidden md:flex">
-              <Settings className="h-4 w-4" />
-            </Button>
-            <Button variant="ghost" size="sm">
+            <Button 
+              variant="ghost" 
+              size="sm"
+              onClick={onLoginClick}
+              title="Sign In"
+            >
               <User className="h-4 w-4" />
             </Button>
             <Button

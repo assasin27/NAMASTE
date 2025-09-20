@@ -10,7 +10,7 @@ import { Copy, Download, Eye, Code2 } from "lucide-react";
 const mockFHIRBundle = {
   resourceType: "Bundle",
   id: "namaste-icd11-mapping-bundle",
-  timestamp: "2024-01-15T10:30:00Z",
+  timestamp: "2025-01-15T10:30:00Z",
   entry: [
     {
       resource: {
@@ -46,8 +46,8 @@ const mockFHIRBundle = {
           reference: "Patient/patient-001"
         },
         period: {
-          start: "2024-01-15T10:00:00Z",
-          end: "2024-01-15T11:00:00Z"
+          start: "2025-01-15T10:00:00Z",
+          end: "2025-01-15T11:00:00Z"
         }
       }
     }
@@ -91,14 +91,14 @@ const mockCondition = {
   encounter: {
     reference: "Encounter/encounter-001"
   },
-  recordedDate: "2024-01-15T10:30:00Z"
+  recordedDate: "2025-01-15T10:30:00Z"
 };
 
 const mockCodeSystem = {
   resourceType: "CodeSystem",
   id: "namaste-codes",
   url: "https://namaste.gov.in/codes",
-  version: "2024.1",
+  version: "2025.1",
   name: "NAMASTECodes",
   title: "NAMASTE - National AYUSH Morbidity & Standardized Terminologies Electronic",
   status: "active",
