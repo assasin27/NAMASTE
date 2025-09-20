@@ -1,12 +1,16 @@
-import { useState } from "react";
-// import { fetchICD11Codes } from "@/lib/icd11Api";
+import { useState, useCallback } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Search, Copy, ExternalLink, ArrowRight } from "lucide-react";
-import ICD11Browser from "./ICD11Browser";
+import { Command, CommandInput, CommandList, CommandGroup, CommandItem } from "@/components/ui/command";
+import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
+import { toast } from "@/components/ui/use-toast";
+import debounce from 'lodash/debounce';
+import { CodeMappingService } from "@/lib/services/codeMappingService";
+import CSVImport from "./CSVImport";
 
 // Mock data for demonstration
 const mockNamasteResults = [
@@ -60,17 +64,51 @@ const CodeSearchInterface = () => {
   const [activeTab, setActiveTab] = useState("namaste");
   const [results, setResults] = useState<any[]>([]);
   const [isSearching, setIsSearching] = useState(false);
+  const [suggestions, setSuggestions] = useState<any[]>([]);
+  const [showSuggestions, setShowSuggestions] = useState(false);
+
+  const codeMappingService = CodeMappingService.getInstance();
+
+  const debouncedSearch = useCallback(
+    debounce(async (query: string) => {
+      if (!query.trim()) {
+        setSuggestions([]);
+        return;
+      }
+
+      try {
+        const searchResults = activeTab === "namaste"
+          ? await codeMappingService.searchNAMASTECodes(query)
+          : await codeMappingService.searchICD11Codes(query);
+        
+        setSuggestions(searchResults.slice(0, 5));
+      } catch (error) {
+        console.error("Search error:", error);
+        setSuggestions([]);
+      }
+    }, 300),
+    [activeTab]
+  );
 
   const handleSearch = async () => {
     if (!searchTerm.trim()) return;
     setIsSearching(true);
-    setTimeout(() => {
-      setResults(mockNamasteResults.filter(item => 
-        item.term.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        item.code.toLowerCase().includes(searchTerm.toLowerCase())
-      ));
+
+    try {
+      const results = activeTab === "namaste"
+        ? await codeMappingService.searchNAMASTECodes(searchTerm)
+        : await codeMappingService.searchICD11Codes(searchTerm);
+
+      setResults(results);
+    } catch (error) {
+      toast({
+        title: "Error",
+        description: "Failed to search codes. Please try again.",
+        variant: "destructive",
+      });
+    } finally {
       setIsSearching(false);
-    }, 800);
+    }
   };
 
   const copyToClipboard = (text: string) => {
@@ -95,20 +133,57 @@ const CodeSearchInterface = () => {
             <div className="space-y-6">
               <div className="flex flex-col sm:flex-row gap-4">
                 <div className="flex-1 relative">
-                  <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground h-4 w-4" />
-                  <Input
-                    placeholder="Search medical terms, codes, or descriptions..."
-                    value={searchTerm}
-                    onChange={(e) => setSearchTerm(e.target.value)}
-                    className="pl-10 h-12 text-lg"
-                    onKeyPress={(e) => e.key === 'Enter' && handleSearch()}
-                  />
+                  <Popover open={showSuggestions} onOpenChange={setShowSuggestions}>
+                    <PopoverTrigger asChild>
+                      <div className="relative">
+                        <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground h-4 w-4" />
+                        <Input
+                          placeholder="Search medical terms, codes, or descriptions..."
+                          value={searchTerm}
+                          onChange={(e) => {
+                            const value = e.target.value;
+                            setSearchTerm(value);
+                            debouncedSearch(value);
+                            setShowSuggestions(true);
+                          }}
+                          onKeyPress={(e) => e.key === 'Enter' && handleSearch()}
+                          className="pl-10 h-12 text-lg"
+                        />
+                      </div>
+                    </PopoverTrigger>
+                    <PopoverContent className="w-[calc(100vw-2rem)] sm:w-[40rem] p-0">
+                      <Command>
+                        <CommandList>
+                          <CommandGroup>
+                            {suggestions.map((item) => (
+                              <CommandItem
+                                key={item.code}
+                                onSelect={() => {
+                                  setSearchTerm(item.term);
+                                  setShowSuggestions(false);
+                                  handleSearch();
+                                }}
+                              >
+                                <div className="flex items-center">
+                                  <Badge className="mr-2">{item.code}</Badge>
+                                  <span>{item.term}</span>
+                                </div>
+                              </CommandItem>
+                            ))}
+                          </CommandGroup>
+                        </CommandList>
+                      </Command>
+                    </PopoverContent>
+                  </Popover>
                 </div>
-                <Button 
-                  onClick={handleSearch}
-                  disabled={isSearching}
-                  size="lg"
-                  className="medical-gradient shadow-medical"
+                </div>
+                <div className="flex gap-2">
+                  <CSVImport />
+                  <Button 
+                    onClick={handleSearch}
+                    disabled={isSearching}
+                    size="lg"
+                    className="medical-gradient shadow-medical"
                 >
                   {isSearching ? "Searching..." : "Search"}
                 </Button>
@@ -185,7 +260,9 @@ const CodeSearchInterface = () => {
                 </TabsContent>
 
                 <TabsContent value="icd11" className="mt-6">
-                  <ICD11Browser />
+                  <div className="text-center py-12">
+                    <p className="text-muted-foreground">ICD-11 Browser integration coming soon</p>
+                  </div>
                 </TabsContent>
               </Tabs>
             </div>

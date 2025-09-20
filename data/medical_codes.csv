@@ -1,0 +1,11 @@
+code,namaste_code,description_en,description_hi,category,subcategory,tags,icd11_mapping,last_updated
+NMST001,AYR-001,"Vata Dosha Imbalance","वात दोष असंतुलन",Ayurveda,Dosha,"ayurveda,vata,dosha",MG24.0,2025-09-19
+NMST002,AYR-002,"Pitta Dosha Imbalance","पित्त दोष असंतुलन",Ayurveda,Dosha,"ayurveda,pitta,dosha",MG24.1,2025-09-19
+NMST003,AYR-003,"Kapha Dosha Imbalance","कफ दोष असंतुलन",Ayurveda,Dosha,"ayurveda,kapha,dosha",MG24.2,2025-09-19
+NMST004,YOG-001,"Pranayama Benefits","प्राणायाम लाभ",Yoga,Breathing,"yoga,pranayama,breathing",PL00.1,2025-09-19
+NMST005,YOG-002,"Meditation Practice","ध्यान अभ्यास",Yoga,Meditation,"yoga,meditation,mindfulness",QA12.0,2025-09-19
+NMST006,UNN-001,"Unani Digestive Treatment","यूनानी पाचन उपचार",Unani,Digestive,"unani,digestive,treatment",MD90.0,2025-09-19
+NMST007,SID-001,"Siddha Herbal Medicine","सिद्ध जड़ी बूटी दवा",Siddha,Herbs,"siddha,herbal,medicine",PB63.1,2025-09-19
+NMST008,HOM-001,"Homeopathic Remedy","होम्योपैथिक उपचार",Homeopathy,General,"homeopathy,remedy",PL01.2,2025-09-19
+NMST009,NAT-001,"Naturopathy Diet","प्राकृतिक चिकित्सा आहार",Naturopathy,Diet,"naturopathy,diet,natural",MF31.0,2025-09-19
+NMST010,INT-001,"Integrated Therapy","एकीकृत चिकित्सा",Integrated,Combined,"integrated,therapy,holistic",QC42.1,2025-09-19
