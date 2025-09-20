@@ -46,8 +46,8 @@ const mockFHIRBundle = {
           reference: "Patient/patient-001"
         },
         period: {
-          start: "2024-01-15T10:00:00Z",
-          end: "2024-01-15T11:00:00Z"
+          start: "2025-01-15T10:00:00Z",
+          end: "2025-01-15T11:00:00Z"
         }
       }
     }

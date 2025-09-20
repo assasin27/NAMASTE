@@ -24,7 +24,7 @@ const HeroSection = () => {
             <div className="space-y-4">
               <Badge variant="secondary" className="inline-flex items-center space-x-2">
                 <Shield className="h-3 w-3" />
-                <span>SIH 2024 Solution</span>
+              
               </Badge>
               
               <h1 className="text-4xl lg:text-6xl font-bold text-foreground leading-tight">
