@@ -77,17 +77,19 @@ export async function getICD11AccessToken() {
 export async function fetchICD11Codes(query: string) {
   try {
     console.log("Fetching ICD-11 codes for query:", query);
-    const accessToken = await getICD11AccessToken();
     const config = getICD11Config();
     
-    const endpoint = `${config.apiUrl}/entity/search?q=${encodeURIComponent(query)}&linearization=mms&release=2023-01`;
+    // Get a fresh token for the request
+    const token = await getICD11AccessToken();
+    
+    // Using the proxy endpoint for search
+    const endpoint = `${config.apiUrl}/search?q=${encodeURIComponent(query)}&linearization=mms&release=2023-01`;
     console.log("Making request to endpoint:", endpoint);
 
     const headers = {
-      "Authorization": `Bearer ${accessToken}`,
       "Accept": "application/json",
       "Accept-Language": "en",
-      "API-Version": "v2"
+      "Authorization": `Bearer ${token}`
     };
     console.log("Request headers:", headers);
 

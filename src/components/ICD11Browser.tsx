@@ -1,6 +1,7 @@
 declare global {
   interface Window {
     ECT: any;
+    lastRetryTimestamp?: number;
   }
 }
 
@@ -13,6 +14,7 @@ const ICD11Browser = () => {
   const [error, setError] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const [retryCount, setRetryCount] = useState(0);
+  const [isRetrying, setIsRetrying] = useState(false);
 
   useEffect(() => {
     let isMounted = true;
@@ -23,42 +25,22 @@ const ICD11Browser = () => {
         console.log("Starting ECT initialization");
         const config = getICD11Config();
         
-        // Import dynamically to avoid issues with SSR
-        const { testConnectivity, diagnoseNetworkIssue } = await import("../lib/networkTest");
+        // Skip network connectivity tests since we're using a proxy server
+        console.log("Using proxy server for API requests");
         
-        console.log("Testing network connectivity...");
-        const connectivityResults = await testConnectivity();
-        const failedEndpoints = connectivityResults.filter(r => !r.success);
-        
-        if (failedEndpoints.length > 0) {
-          console.error("Network connectivity test failed:", failedEndpoints);
-          
-          // Try to diagnose the token endpoint specifically
-          const tokenEndpoint = "https://icdaccessmanagement.who.int/connect/token";
-          const diagnosis = await diagnoseNetworkIssue(tokenEndpoint);
-          
-          if (!diagnosis.dnsWorks) {
-            throw new Error(`DNS resolution failed for token endpoint: ${diagnosis.error}`);
-          }
-          
-          if (!diagnosis.corsWorks) {
-            throw new Error(`CORS preflight failed for token endpoint. Headers: ${JSON.stringify(diagnosis.corsHeaders)}`);
-          }
-          
-          const errorDetails = failedEndpoints.map(r => {
-            if ('error' in r) {
-              return `${r.url} (Error: ${r.error})`;
-            } else {
-              return `${r.url} (Status: ${r.status})`;
-            }
-          }).join(", ");
-          
-          throw new Error(`Network connectivity failed:\n${errorDetails}`);
+        // Get access token through proxy with better error handling
+        let token;
+        try {
+          token = await getICD11AccessToken();
+          console.log("Access token obtained successfully");
+        } catch (tokenError) {
+          console.error("Token retrieval error:", tokenError);
+          throw new Error(`Unable to connect to ICD-11 API: ${tokenError instanceof Error ? tokenError.message : 'Authentication failed'}`);
         }
         
-        console.log("Network connectivity test passed");
-        const token = await getICD11AccessToken();
-        console.log("Access token obtained successfully");
+        if (!token) {
+          throw new Error("Failed to obtain access token from the server. Please try again later.");
+        }
         
         if (!isMounted) return;
 
@@ -87,6 +69,9 @@ const ICD11Browser = () => {
 
           try {
             console.log("Creating ECT browser instance");
+            console.log("Creating ECT browser with token:", token.substring(0, 10) + "...");
+            console.log("API URL:", config.apiUrl);
+            
             const ectBrowser = new window.ECT.Handler({
               container: containerRef.current,
               apiServerUrl: config.apiUrl,
@@ -101,6 +86,10 @@ const ICD11Browser = () => {
               showLinearization: "mms",
               releaseId: "2023-01",
               useBrowserToken: true,
+              onError: (error) => {
+                console.error("ECT Browser error:", error);
+                setError(`ECT Browser error: ${error.message || JSON.stringify(error)}`);
+              }
             });
 
             // Set up token refresh (every 50 minutes to be safe)
@@ -170,15 +159,57 @@ const ICD11Browser = () => {
     };
   }, []);
 
+  const handleRetry = () => {
+    setError(null);
+    setIsLoading(true);
+    setIsRetrying(true);
+    
+    // Reset retry count if it's been more than 5 minutes since last retry
+    const now = Date.now();
+    if (now - (window.lastRetryTimestamp || 0) > 5 * 60 * 1000) {
+      setRetryCount(0);
+    }
+    window.lastRetryTimestamp = now;
+    
+    // Force re-run of the useEffect
+    setRetryCount(prev => prev + 1);
+  };
+
   return (
     <div style={{ height: "600px", width: "100%" }}>
-      {isLoading && <div style={{ padding: "1em" }}>Loading ICD-11 browser...</div>}
-      {error && (
-        <div style={{ color: "red", padding: "1em" }}>
-          <strong>ICD-11 Browser Error:</strong> {error}
+      {isLoading && (
+        <div style={{ padding: "1em" }}>
+          {isRetrying ? "Retrying connection to ICD-11..." : "Loading ICD-11 browser..."}
         </div>
       )}
-      <div ref={containerRef} style={{ height: "100%", display: isLoading ? "none" : "block" }} />
+      {error && (
+        <div style={{ 
+          color: "red", 
+          padding: "1em", 
+          backgroundColor: "#fff8f8", 
+          border: "1px solid #ffcdd2",
+          borderRadius: "4px",
+          marginBottom: "1em"
+        }}>
+          <strong>ICD-11 Browser Error:</strong> {error}
+          <div style={{ marginTop: "1em" }}>
+            <button 
+              onClick={handleRetry}
+              style={{
+                backgroundColor: "#2196f3",
+                color: "white",
+                border: "none",
+                padding: "8px 16px",
+                borderRadius: "4px",
+                cursor: "pointer"
+              }}
+            >
+              Retry Connection
+            </button>
+          </div>
+        </div>
+      )}
+      <div ref={containerRef} style={{ height: "100%", display: isLoading || error ? "none" : "block" }} />
     </div>
   );
 };

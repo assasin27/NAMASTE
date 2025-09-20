@@ -21,7 +21,7 @@ const mockMappings = [
     namasteTerm: "Vata Dosha Imbalance with Digestive Disorders",
     icdTM2Code: "TM26.2Z",
     icdTM2Term: "Traditional medicine disorders of Vata",
-    icdBioCode: "11.D2.Y",
+    icdBioCode: "MD92",
     icdBioTerm: "Functional dyspepsia, unspecified",
     confidence: 95,
     status: "mapped"

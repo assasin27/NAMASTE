@@ -1,21 +1,11 @@
 const testUrls = [
   {
-    url: "https://icdaccessmanagement.who.int/connect/token",
-    method: "OPTIONS",
-    headers: {
-      "Access-Control-Request-Method": "POST",
-      "Access-Control-Request-Headers": "authorization,content-type",
-      "Origin": window.location.origin
-    }
+    url: "http://localhost:5000/api/icd11/token",
+    method: "HEAD"
   },
   {
-    url: "https://id.who.int/icd/release/11",
-    method: "OPTIONS",
-    headers: {
-      "Access-Control-Request-Method": "GET",
-      "Access-Control-Request-Headers": "authorization,accept",
-      "Origin": window.location.origin
-    }
+    url: "http://localhost:5000/api/icd11/entity/search",
+    method: "HEAD"
   },
   {
     url: "https://icdcdn.who.int/embeddedct/icd11ect-1.7.1.js",
@@ -78,7 +68,7 @@ export async function testConnectivity() {
 async function testTokenEndpoint() {
   const clientId = import.meta.env.VITE_ICD11_CLIENT_ID;
   const clientSecret = import.meta.env.VITE_ICD11_SECRET_KEY;
-  const tokenUrl = "https://icdaccessmanagement.who.int/connect/token";
+  const tokenUrl = "http://localhost:5000/api/icd11/token";
 
   try {
     console.log("Testing token endpoint with credentials...");
@@ -94,10 +84,8 @@ async function testTokenEndpoint() {
       headers: {
         "Content-Type": "application/x-www-form-urlencoded",
         "Authorization": authHeader,
-        "Accept": "application/json",
-        "Origin": window.location.origin
+        "Accept": "application/json"
       },
-      mode: "cors",
       body: body.toString()
     });
 
